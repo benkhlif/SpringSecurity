@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.benkhlif.springsecurity.dto.SignupRequest;
+import com.benkhlif.springsecurity.entities.Role;
 import com.benkhlif.springsecurity.entities.User;
 import com.benkhlif.springsecurity.services.AuthService;
   
@@ -17,25 +18,21 @@ import com.benkhlif.springsecurity.services.AuthService;
 public class SignupController {
     private final AuthService authService;
  
-    public SignupController(AuthService authService ) {
+ 
+    public SignupController(AuthService authService) {
         this.authService = authService;
-     }
-
+    }
+    // Lorsqu'un utilisateur s'inscrit, les informations sont reçues dans un objet SignupRequest.
     @PostMapping
     public ResponseEntity<?> signupCustomer(@RequestBody SignupRequest signupRequest) {
-        // Créer un compte avec un mot de passe temporaire
         User createdCustomer = authService.createCustomer(signupRequest);
-
         if (createdCustomer != null) {
- 
-            // Récupérer le mot de passe temporaire généré
-            String temporaryPassword = createdCustomer.getPassword(); 
- 
-
-            return ResponseEntity.status(HttpStatus.CREATED).body("Compte créé avec succès et email envoyé !");
+            // Par défaut, l'utilisateur se voit attribuer le rôle USER.
+            createdCustomer.setRole(Role.MANAGER);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Échec de la création du compte");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to create customer");
         }
-    }
+    } 
 }
 

@@ -5,9 +5,18 @@ import com.benkhlif.springsecurity.entities.Role;
 public class SignupRequest {
 
     private String email;
-
     private String nom;
-    private Role role;
+
+    private String password;
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	private Role role;
  
     public Role getRole() {
 		return role;

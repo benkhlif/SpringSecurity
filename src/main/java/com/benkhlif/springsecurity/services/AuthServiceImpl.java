@@ -11,13 +11,11 @@ import com.benkhlif.springsecurity.dto.SignupRequest;
 import com.benkhlif.springsecurity.entities.User;
 import com.benkhlif.springsecurity.repository.UserRepository;
 
-  
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Random random = new SecureRandom();
 
     public AuthServiceImpl(UserRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
@@ -25,6 +23,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    // Méthode pour créer un nouvel utilisateur (Customer) à partir d'une requête d'inscription (SignupRequest)
     public User createCustomer(SignupRequest signupRequest) {
         if (customerRepository.existsByEmail(signupRequest.getEmail())) {
             return null;
@@ -32,27 +31,10 @@ public class AuthServiceImpl implements AuthService {
 
         User customer = new User();
         BeanUtils.copyProperties(signupRequest, customer);
+        String hashPassword = passwordEncoder.encode(signupRequest.getPassword());
+        customer.setPassword(hashPassword);
+ 
 
-        // 🔹 Générer un mot de passe temporaire aléatoire
-        String temporaryPassword = generateTemporaryPassword(10);
-        customer.setPassword(passwordEncoder.encode(temporaryPassword)); // Hash du mot de passe
-
-        // Assignation du rôle par défaut
-        customer.setRole(signupRequest.getRole());
-
-        customer = customerRepository.save(customer);
-
-        // ⚠️ Ne stocke pas le mot de passe temporaire en clair dans la DB, mais renvoie-le pour l'email
-        customer.setPassword(temporaryPassword); 
-        return customer;
-    }
-
-    private String generateTemporaryPassword(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!";
-        StringBuilder password = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            password.append(chars.charAt(random.nextInt(chars.length())));
-        }
-        return password.toString();
+        return customerRepository.save(customer);
     }
 }
