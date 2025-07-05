@@ -28,3 +28,13 @@ com.benkhlif.springsecurity
 ├── entities # Modèle de données (User, Role, etc.)
 ├── dto # Objets de transfert de données (SignupRequest)
 └── SpringSecurityApplication.java # Classe principale
+
+
+## 📸 Démonstration
+
+### Inscription  
+![Inscription](https://github.com/user-attachments/assets/7581ac07-d14f-4803-9a32-30f232082aa6)
+
+### Login  
+![Login](https://github.com/user-attachments/assets/d282df2b-8e80-4975-8d9f-62fc068814e1)
+
